@@ -1,0 +1,4 @@
+we are installing express, nodemon and cors
+we need an api key to be able to use those api's
+we are using internal gpt models to generate our outputs 
+we are using gpt-4o mini ai model(cheaper)
