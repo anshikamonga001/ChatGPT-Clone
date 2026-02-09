@@ -1,5 +1,4 @@
 import express from "express";
-import "dotenv/config";
 import Thread from "../models/Thread.js";
 import Groq from "groq-sdk";
 
@@ -9,58 +8,93 @@ const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });
 
-/* ================= CREATE THREAD ================= */
-router.post("/thread", async (req, res) => {
+/* =====================================================
+   1️⃣ GET /thread  → get all threads (latest first)
+   ===================================================== */
+router.get("/thread", async (req, res) => {
   try {
-    console.log("THREAD BODY:", req.body);
+    const threads = await Thread.find({})
+      .sort({ updatedAt: -1 })
+      .select("-messages"); // messages hide (list view)
 
-    const threadId = req.body && req.body.threadId;
-    const title = req.body && req.body.title;
-
-    if (!threadId) {
-      return res.status(400).json({ error: "threadId missing" });
-    }
-
-    let thread = await Thread.findOne({ threadId });
-    if (thread) return res.json(thread);
-
-    thread = new Thread({
-      threadId,
-      title: title || "New Chat",
-      messages: [],
-    });
-
-    await thread.save();
-    res.status(201).json(thread);
-
+    res.json(threads);
   } catch (err) {
-    console.error("Create thread error:", err);
-    res.status(500).json({ error: err.message });
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch threads" });
   }
 });
 
-/* ================= SEND MESSAGE ================= */
-router.post("/message", async (req, res) => {
+/* =====================================================
+   2️⃣ GET /thread/:threadId → get messages of a thread
+   ===================================================== */
+router.get("/thread/:threadId", async (req, res) => {
+  const { threadId } = req.params;
+
   try {
-    const threadId = req.body && req.body.threadId;
-    const message = req.body && req.body.message;
-
-    if (!threadId || !message) {
-      return res.status(400).json({ error: "threadId or message missing" });
-    }
-
     const thread = await Thread.findOne({ threadId });
+
     if (!thread) {
       return res.status(404).json({ error: "Thread not found" });
     }
 
-    // save user message
+    res.json(thread.messages);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch chat" });
+  }
+});
+
+/* =====================================================
+   3️⃣ DELETE /thread/:threadId → delete a thread
+   ===================================================== */
+router.delete("/thread/:threadId", async (req, res) => {
+  const { threadId } = req.params;
+
+  try {
+    const deleted = await Thread.findOneAndDelete({ threadId });
+
+    if (!deleted) {
+      return res.status(404).json({ error: "Thread not found" });
+    }
+
+    res.json({ success: "Thread deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to delete thread" });
+  }
+});
+
+/* =====================================================
+   4️⃣ POST /chat → main chat logic
+   ===================================================== */
+router.post("/chat", async (req, res) => {
+  try {
+    const { threadId, message } = req.body;
+
+    // 1️⃣ validate
+    if (!threadId || !message) {
+      return res.status(400).json({ error: "threadId or message missing" });
+    }
+
+    // 2️⃣ find thread
+    let thread = await Thread.findOne({ threadId });
+
+    // if not exist → create
+    if (!thread) {
+      thread = new Thread({
+        threadId,
+        title: message.slice(0, 30),
+        messages: [],
+      });
+    }
+
+    // 3️⃣ save user message
     thread.messages.push({
       role: "user",
       content: message,
     });
 
-    // ⚠️ IMPORTANT FIX: send ONLY role + content to Groq
+    // 4️⃣ send to Groq (ONLY role + content)
     const completion = await groq.chat.completions.create({
       model: "llama-3.1-8b-instant",
       messages: thread.messages.map((m) => ({
@@ -69,26 +103,28 @@ router.post("/message", async (req, res) => {
       })),
     });
 
-    const aiReply = completion.choices[0].message.content;
+    const assistantReply =
+      completion.choices[0]?.message?.content || "No reply";
 
-    // save assistant reply
+    // 5️⃣ save assistant reply
     thread.messages.push({
       role: "assistant",
-      content: aiReply,
+      content: assistantReply,
     });
 
+    thread.updatedAt = new Date();
     await thread.save();
 
+    // 6️⃣ response
     res.json({
-      reply: aiReply,
+      reply: assistantReply,
       messages: thread.messages,
     });
 
   } catch (err) {
     console.error("Chat error:", err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: "Something went wrong" });
   }
 });
-
 
 export default router;
