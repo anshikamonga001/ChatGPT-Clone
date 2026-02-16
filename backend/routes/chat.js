@@ -13,7 +13,7 @@ const groq = new Groq({
    ===================================================== */
 router.get("/thread", async (req, res) => {
   try {
-    const threads = await Thread.find({})
+    let threads = await Thread.find({})
       .sort({ updatedAt: -1 })
       .select("-messages"); // messages hide (list view)
 
