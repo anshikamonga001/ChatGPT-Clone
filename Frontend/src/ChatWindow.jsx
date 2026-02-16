@@ -1,12 +1,19 @@
 import "./ChatWindow.css";
 import Chat from "./Chat.jsx";
 import { MyContext } from "./MyContext.jsx";
-import { useContext } from "react";
+import { useContext,useState } from "react";
+import {ScaleLoader} from "react-spinners";
 
 function ChatWindow(){
     const { prompt, setPrompt, reply, setReply, currThreadId } = useContext(MyContext);
+    const [isLoading, setIsLoading] = useState(false);
+
     const getReply = async () => {
-  if (!prompt.trim()) return;
+        setIsLoading(true);
+  if (!prompt.trim()) {
+    setIsLoading(false);
+    return;
+  }
 
   const options = {
     method: "POST",
@@ -33,6 +40,7 @@ function ChatWindow(){
   } catch (error) {
     console.error("Error fetching reply:", error);
   }
+    setIsLoading(false);
 };
 
     return (
@@ -44,6 +52,7 @@ function ChatWindow(){
                 </div>
             </div>
             <Chat></Chat>
+            <ScaleLoader color="#fff" loading={isLoading}></ScaleLoader>
             <div className="chatInput">
                 <div className="inputBox">
                     <input placeholder="Ask anything" value={prompt} onChange={(e) => setPrompt(e.target.value)} onKeyDown={(e) => e.key === "Enter" ? getReply() : ''} />
