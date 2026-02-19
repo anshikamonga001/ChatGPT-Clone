@@ -1,47 +1,57 @@
 import "./ChatWindow.css";
 import Chat from "./Chat.jsx";
 import { MyContext } from "./MyContext.jsx";
-import { useContext,useState } from "react";
+import { useContext,useState ,useEffect} from "react";
 import {ScaleLoader} from "react-spinners";
 
 function ChatWindow(){
-    const { prompt, setPrompt, reply, setReply, currThreadId } = useContext(MyContext);
+    const { prompt, setPrompt, reply, setReply, currThreadId , previousChats, setPreviousChats} = useContext(MyContext);
     const [isLoading, setIsLoading] = useState(false);
 
     const getReply = async () => {
-        setIsLoading(true);
-  if (!prompt.trim()) {
-    setIsLoading(false);
-    return;
-  }
+  if (!prompt.trim()) return;
 
-  const options = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      message: prompt,
-      threadId: currThreadId,
-    }),
-  };
+  setIsLoading(true);
+
+  const userMessage = prompt; // store before clearing
 
   try {
-    const response = await fetch(
-      "http://localhost:8080/chat/chat",
-      options
-    );
+    const response = await fetch("http://localhost:8080/chat/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: userMessage,
+        threadId: currThreadId,
+      }),
+    });
 
     const rep = await response.json();
-    console.log(rep);
 
-    setReply(rep.reply);
+    setPreviousChats((prevChats) => [
+      ...prevChats,
+      { role: "user", content: userMessage },
+      { role: "assistant", content: rep.reply }
+    ]);
+
     setPrompt("");
   } catch (error) {
     console.error("Error fetching reply:", error);
   }
-    setIsLoading(false);
+
+  setIsLoading(false);
 };
+
+
+  //append new chats to previousChats
+  useEffect(() => {
+  if (reply) {
+    setPreviousChats((prevChats) => [
+      ...prevChats,
+      { role: "user", content: prompt },
+      { role: "assistant", content: reply }
+    ]);
+  }
+}, [reply]);
 
     return (
         <div className="chatWindow">
