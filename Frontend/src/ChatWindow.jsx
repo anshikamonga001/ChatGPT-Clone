@@ -43,15 +43,15 @@ function ChatWindow(){
 
 
   //append new chats to previousChats
-  useEffect(() => {
-  if (reply) {
-    setPreviousChats((prevChats) => [
-      ...prevChats,
-      { role: "user", content: prompt },
-      { role: "assistant", content: reply }
-    ]);
-  }
-}, [reply]);
+//   useEffect(() => {
+//   if (reply) {
+//     setPreviousChats((prevChats) => [
+//       ...prevChats,
+//       { role: "user", content: prompt },
+//       { role: "assistant", content: reply }
+//     ]);
+//   }
+// }, [reply]);
 
     return (
         <div className="chatWindow">
