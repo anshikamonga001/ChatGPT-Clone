@@ -5,16 +5,16 @@
     width: 320px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
 }
+
 .logo{
     height: 25px;
     width: 25px;
     background-color: #fff;
     border-radius: 50%;
     object-fit: cover;
-
 }
+
 button{
     display: flex;
     justify-content: space-between;
@@ -26,29 +26,33 @@ button{
     border: solid 0.5px rgba(255,255,255,0.5);
     cursor: pointer;
 }
+
 button span{
     font-size: 20px;
 }
+
 button:hover{
     background-color: rgba(180,180,180,0.05);
 }
+
 .history{
+    flex: 1;
+    overflow-y: auto;
     margin: 10px;
     padding: 10px;
-    height: 100%;
 }
+
 .history li{
     list-style-type: none;
     cursor: pointer;
-    padding: 2px 5px;
+    padding: 8px 10px;
     margin-bottom: 0.3rem;
     font-size: 14px;
-    border: solid 10px transparent;
-    position: relative;
 }
+
 .history li:hover{
     background-color: rgba(180,180,180,0.05);
-    border-radius: 10px;
+    border-radius: 8px;
 }
 
 .sign{

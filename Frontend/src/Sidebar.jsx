@@ -1,48 +1,118 @@
 import "./Sidebar.css";
 import { MyContext } from "./MyContext.jsx";
 import { useContext, useEffect } from "react";
+import { v1 as uuidv1 } from "uuid";
 
-function Sidebar(){
-    const { allThreads, setAllThreads, currThreadId } = useContext(MyContext);
-    const getAllThreads = async () => {
-        try {
-            const response = await fetch("http://localhost:8080/chat/thread");
-            const res = await response.json();
-            const fileteredData = res.map(thread => ({
-                threadId: thread.threadId,
-                title: thread.title,
-            }));
-            setAllThreads(fileteredData);
-        } catch (error) {
-            console.log("Error fetching threads:", error);
-        }
-    };
+function Sidebar() {
 
-    useEffect(() => {
-        getAllThreads();
-    }, []);
-    return (
-        <section className="sidebar">
-            {/* new chat button */}
-            <button>
-                <img src="src/assets/blacklogo.png" alt="gpt logo" className="logo" />
-                <span><i className="fa-regular fa-pen-to-square"></i></span>
-            </button>
+  const {
+    allThreads,
+    setAllThreads,
+    currThreadId,
+    setNewChat,
+    setPrompt,
+    setReply,
+    setCurrThreadId,
+    setPreviousChats
+  } = useContext(MyContext);
 
-            {/* history */}
-            <ul className="history">
-                {
-                    allThreads?.map((thread,idx) => (
-                        <li key={idx}>{thread.title}</li>
-                    ))}
-            </ul>
+  const getAllThreads = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/chat/thread");
+      const res = await response.json();
 
-            {/* sign */}
-            <div className="sign">
-                <p>By AnshikaMonga &hearts;</p>
-            </div>
-        </section>
-    )
+      console.log("THREADS:", res);
+
+      if (!Array.isArray(res)) {
+        console.error("Threads response is not array:", res);
+        return;
+      }
+
+      const filteredData = res.map(thread => ({
+        threadId: thread.threadId,
+        title: thread.title
+      }));
+
+      setAllThreads(filteredData);
+
+    } catch (error) {
+      console.log("Error fetching threads:", error);
+    }
+  };
+
+  useEffect(() => {
+    getAllThreads();
+  }, [currThreadId]);
+
+  const createNewChat = () => {
+    const newId = uuidv1();
+
+    setNewChat(true);
+    setPrompt("");
+    setReply(null);
+    setCurrThreadId(newId);
+    setPreviousChats([]);
+
+    getAllThreads();
+  };
+
+  const changeThread = async (newThreadId) => {
+
+    const selectedThread = allThreads.find(
+      thread => thread.threadId === newThreadId
+    );
+
+    if (!selectedThread) return;
+
+    setCurrThreadId(selectedThread.threadId);
+
+    try {
+
+      const response = await fetch(
+        `http://localhost:8080/chat/thread/${selectedThread.threadId}`
+      );
+
+      const res = await response.json();
+
+      setPreviousChats(res);
+      setNewChat(false);
+      setReply(null);
+
+    } catch (error) {
+      console.log("Error fetching thread chats:", error);
+    }
+  };
+
+  return (
+    <section className="sidebar">
+
+      {/* New Chat Button */}
+      <button onClick={createNewChat}>
+        <img src="src/assets/blacklogo.png" alt="gpt logo" className="logo" />
+        <span>
+          <i className="fa-regular fa-pen-to-square"></i>
+        </span>
+      </button>
+
+      {/* Chat History */}
+      <ul className="history">
+        {allThreads?.map(thread => (
+          <li
+            key={thread.threadId}
+            onClick={() => changeThread(thread.threadId)}
+          >
+            {thread.title}
+          </li>
+        ))}
+      </ul>
+
+      {/* Footer */}
+      <div className="sign">
+        <p>By AnshikaMonga ♥</p>
+      </div>
+
+    </section>
+  );
 }
 
 export default Sidebar;
