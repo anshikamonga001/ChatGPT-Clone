@@ -5,11 +5,11 @@ import { useContext, useState } from "react";
 
 function ChatWindow(){
 
-    const { prompt, setPrompt, currThreadId, setPreviousChats, setNewChat } = useContext(MyContext);
-    
+    const { prompt, setPrompt, currThreadId, setPreviousChats, setNewChat } = useContext(MyContext);    
     const [isLoading, setIsLoading] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
     const [isTyping, setIsTyping] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);//false
 
     const getReply = async () => {
 
@@ -58,18 +58,33 @@ function ChatWindow(){
         setIsLoading(false);
     };
 
+    const handleProfileClick = () => {
+        setIsOpen(!isOpen);
+    };
+
+
     return (
         <div className="chatWindow">
 
             <div className="navbar">
                 <span>ChatGPT &nbsp; <i className="fa-solid fa-chevron-down"></i></span>
 
-                <div className="userIconDiv">
+                <div className="userIconDiv" onClick={handleProfileClick}>
                     <span className="userIcon">
                         <i className="fa-solid fa-user"></i>
                     </span>
                 </div>
             </div>
+            {
+                isOpen && (
+                    <div className="dropDown">
+                        <div className="dropDownItem"><i class="fa-solid fa-cloud-arrow-up"></i> Upgrade Plan</div>
+                        <div className="dropDownItem"><i class="fa-solid fa-gear"></i> Settings</div>
+                        <div className="dropDownItem"><i class="fa-solid fa-sign-out"></i> Logout</div>
+                    </div>
+                )
+
+            }
 
             <Chat
                 isLoading={isLoading}
