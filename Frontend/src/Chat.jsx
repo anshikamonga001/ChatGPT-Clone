@@ -34,12 +34,12 @@ function Chat({ isLoading, isPaused, setIsTyping }) {
 
     // Only skip typing when opening an old thread
     // Skip typing only when opening an existing thread with messages
-if (justLoadedThreadRef.current && previousChats.length > 2) {
-  justLoadedThreadRef.current = false;
-  prevLengthRef.current = previousChats.length;
-  setTypingReply(last.content);
-  return;
-}
+    if (justLoadedThreadRef.current && previousChats.length > 2) {
+      justLoadedThreadRef.current = false;
+      prevLengthRef.current = previousChats.length;
+      setTypingReply(last.content);
+      return;
+    }
 
     justLoadedThreadRef.current = false;
 

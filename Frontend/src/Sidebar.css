@@ -48,7 +48,13 @@ button:hover{
     padding: 8px 10px;
     margin-bottom: 0.3rem;
     font-size: 14px;
+
+    position: relative;          /* IMPORTANT */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
+
 
 .history li:hover{
     background-color: rgba(180,180,180,0.05);
@@ -61,4 +67,23 @@ button:hover{
     font-size: 14px;
     text-align: center;
     border-top: solid 0.25px rgba(255,255,255,0.5);
+}
+
+
+.fa-trash{
+    opacity: 0;
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+}
+
+
+.history li:hover .fa-trash{
+    opacity: 1;
+    color: #fff;
+}
+
+
+.fa-trash:hover{
+    color: #ff4d4d !important;
 }

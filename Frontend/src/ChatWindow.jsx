@@ -6,7 +6,7 @@ import { useContext, useState } from "react";
 function ChatWindow(){
 
     const { prompt, setPrompt, currThreadId, setPreviousChats, setNewChat } = useContext(MyContext);
-
+    
     const [isLoading, setIsLoading] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
     const [isTyping, setIsTyping] = useState(false);
