@@ -27,6 +27,8 @@ function SettingsModal({ isOpen, onClose }) {
     const val = e.target.checked;
     setDictation(val);
     localStorage.setItem('setting_dictation', val);
+    // Notify ChatWindow to sync dictation state immediately
+    window.dispatchEvent(new Event('focus'));
   };
 
   if (!isOpen) return null;

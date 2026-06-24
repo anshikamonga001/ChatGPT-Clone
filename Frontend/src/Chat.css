@@ -86,3 +86,37 @@ pre{
     color: #b4b4b4;
     font-weight: 500;
 }
+
+/* Message attachments */
+.msgAttachments {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 6px;
+    justify-content: flex-end;
+}
+
+.msgAttachImg {
+    max-width: 240px;
+    max-height: 180px;
+    border-radius: 10px;
+    object-fit: cover;
+    display: block;
+}
+
+.msgAttachTag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 12px;
+    color: #ccc;
+}
+
+.msgAttachTag i {
+    font-size: 13px;
+    color: #aaa;
+}

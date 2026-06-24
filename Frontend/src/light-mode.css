@@ -320,3 +320,14 @@ body.light-mode .upgrade-card.selected {
   box-shadow: 0 0 0 3px rgba(16, 163, 127, 0.2);
   background-color: #f0fdf8;
 }
+
+/* Mic button in light mode */
+body.light-mode #micBtn {
+  color: #666;
+}
+
+body.light-mode #micBtn:hover {
+  color: #111;
+  background-color: rgba(0, 0, 0, 0.06);
+}
+

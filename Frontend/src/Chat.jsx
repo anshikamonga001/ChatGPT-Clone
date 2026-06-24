@@ -106,7 +106,25 @@ function Chat({ isLoading, isPaused, setIsTyping }) {
               key={index}
             >
               {chat.role === "user" ? (
-                <p className="userMessage">{chat.content}</p>
+                <div className="userMessageWrapper">
+                  {/* Render attachments above the message text */}
+                  {chat.attachments && chat.attachments.length > 0 && (
+                    <div className="msgAttachments">
+                      {chat.attachments.map((att, ai) => (
+                        <div className="msgAttachChip" key={ai}>
+                          {att.type === 'image' && att.preview ? (
+                            <img src={att.preview} alt={att.name} className="msgAttachImg" />
+                          ) : att.type === 'github' ? (
+                            <span className="msgAttachTag"><i className="fa-brands fa-github"></i> {att.name}</span>
+                          ) : (
+                            <span className="msgAttachTag"><i className="fa-solid fa-file-lines"></i> {att.name}</span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {chat.content && <p className="userMessage">{chat.content}</p>}
+                </div>
               ) : (
                 <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
                   {isLastAssistant ? typingReply || chat.content : chat.content}
