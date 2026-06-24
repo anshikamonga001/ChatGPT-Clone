@@ -336,3 +336,43 @@
 .upgrade-card.selected .upgrade-btn.premium {
   background: #0d8b6c;
 }
+
+/* Settings Modal Responsiveness */
+@media (max-width: 640px) {
+  .settings-sidebar {
+    width: 60px !important;
+    padding: 15px 0;
+  }
+
+  .settings-tab {
+    padding: 15px 0;
+    justify-content: center;
+    font-size: 0 !important; /* Hide text label */
+    gap: 0;
+  }
+
+  .settings-tab i {
+    font-size: 18px !important; /* Keep icons visible */
+    margin: 0;
+  }
+
+  .settings-body {
+    padding: 20px 15px;
+  }
+
+  .setting-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px 0;
+  }
+
+  .setting-control {
+    width: 100%;
+  }
+
+  .setting-control select {
+    width: 100%;
+  }
+}
+
