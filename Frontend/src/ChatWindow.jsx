@@ -21,6 +21,7 @@ function ChatWindow(){
     const [showAttachMenu, setShowAttachMenu] = useState(false);
     const [showGithubInput, setShowGithubInput] = useState(false);
     const [githubUrl, setGithubUrl] = useState('');
+    const [githubLoading, setGithubLoading] = useState(false);
 
     const fileInputRef = useRef(null);
     const imageInputRef = useRef(null);
@@ -151,20 +152,85 @@ function ChatWindow(){
         setShowAttachMenu(false);
     };
 
-    /* ── GitHub repo ──────────────────────────────────── */
-    const handleAddGithub = () => {
+    /* ── GitHub repo — fetch real content from GitHub API ── */
+    const handleAddGithub = async () => {
         if (!githubUrl.trim()) return;
-        const name = githubUrl.replace('https://github.com/', '').replace(/\/$/, '');
-        setAttachments(prev => [...prev, {
-            type: 'github',
-            name: name || githubUrl,
-            content: null,
-            preview: null,
-            url: githubUrl
-        }]);
-        setGithubUrl('');
+
+        // Extract owner/repo from URL
+        let repoPath = githubUrl
+            .replace('https://github.com/', '')
+            .replace('http://github.com/', '')
+            .replace(/\.git$/, '')
+            .replace(/\/$/, '');
+
+        // Must be owner/repo format
+        const parts = repoPath.split('/');
+        if (parts.length < 2) {
+            alert('Please enter a valid GitHub repo URL like https://github.com/owner/repo');
+            return;
+        }
+        const owner = parts[0];
+        const repo = parts[1];
+
+        setGithubLoading(true);
         setShowGithubInput(false);
         setShowAttachMenu(false);
+
+        try {
+            // 1. Fetch repo metadata
+            const repoRes = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
+            if (!repoRes.ok) throw new Error('Repo not found');
+            const repoData = await repoRes.json();
+
+            // 2. Fetch README
+            let readmeText = '';
+            try {
+                const readmeRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/readme`);
+                if (readmeRes.ok) {
+                    const readmeData = await readmeRes.json();
+                    readmeText = atob(readmeData.content.replace(/\n/g, ''));
+                }
+            } catch (_) { /* README might not exist */ }
+
+            // 3. Fetch file tree
+            let fileTree = '';
+            try {
+                const treeRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/trees/HEAD?recursive=1`);
+                if (treeRes.ok) {
+                    const treeData = await treeRes.json();
+                    fileTree = treeData.tree
+                        .filter(f => f.type === 'blob')
+                        .map(f => f.path)
+                        .slice(0, 80) // limit to 80 files
+                        .join('\n');
+                }
+            } catch (_) { /* tree might not be accessible */ }
+
+            // Build rich context string for the AI
+            const content = [
+                `Repository: ${repoData.full_name}`,
+                repoData.description ? `Description: ${repoData.description}` : '',
+                `Language: ${repoData.language || 'Unknown'}`,
+                `Stars: ${repoData.stargazers_count} | Forks: ${repoData.forks_count}`,
+                `URL: ${repoData.html_url}`,
+                fileTree ? `\nFile Structure:\n${fileTree}` : '',
+                readmeText ? `\nREADME:\n${readmeText.slice(0, 4000)}` : ''
+            ].filter(Boolean).join('\n');
+
+            setAttachments(prev => [...prev, {
+                type: 'github',
+                name: `${owner}/${repo}`,
+                content,
+                preview: null,
+                url: repoData.html_url
+            }]);
+
+        } catch (err) {
+            alert(`Could not fetch repo: ${err.message}. Make sure the repo is public.`);
+        }
+
+        setGithubUrl('');
+        setGithubLoading(false);
     };
 
     /* ── Remove attachment ────────────────────────────── */
@@ -272,6 +338,17 @@ function ChatWindow(){
                     </div>
                 )}
 
+                {/* GitHub loading chip */}
+                {githubLoading && (
+                    <div className="attachmentChips">
+                        <div className="attachChip">
+                            <i className="fa-brands fa-github chipIcon"></i>
+                            <span className="chipName">Fetching repo...</span>
+                            <i className="fa-solid fa-spinner fa-spin" style={{fontSize:'11px', color:'#aaa'}}></i>
+                        </div>
+                    </div>
+                )}
+
                 <div className="inputBox">
 
                     {/* Hidden file inputs */}
@@ -314,7 +391,9 @@ function ChatWindow(){
                                     onKeyDown={(e) => e.key === 'Enter' && handleAddGithub()}
                                     autoFocus
                                 />
-                                <button onClick={handleAddGithub}>Add</button>
+                                <button onClick={handleAddGithub} disabled={githubLoading}>
+                                    {githubLoading ? <i className="fa-solid fa-spinner fa-spin"></i> : 'Add'}
+                                </button>
                                 <span onClick={() => setShowGithubInput(false)} className="githubClose">
                                     <i className="fa-solid fa-xmark"></i>
                                 </span>
