@@ -4,7 +4,6 @@ import { useContext, useEffect } from "react";
 import { v1 as uuidv1 } from "uuid";
 
 function Sidebar() {
-
   const {
     allThreads,
     setAllThreads,
@@ -13,18 +12,24 @@ function Sidebar() {
     setPrompt,
     setReply,
     setCurrThreadId,
-    setPreviousChats
+    setPreviousChats,
+    token,
+    user,
+    handleLogout,
+    refreshThreads
   } = useContext(MyContext);
 
   const getAllThreads = async () => {
+    if (!token) return;
     try {
-      const response = await fetch("http://localhost:8080/chat/thread");
+      const response = await fetch("http://localhost:8080/chat/thread", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
       const res = await response.json();
 
-      console.log("THREADS:", res);
-
       if (!Array.isArray(res)) {
-        console.error("Threads response is not array:", res);
         return;
       }
 
@@ -42,7 +47,7 @@ function Sidebar() {
 
   useEffect(() => {
     getAllThreads();
-  }, [currThreadId]);
+  }, [currThreadId, token, refreshThreads]);
 
   const createNewChat = () => {
     const newId = uuidv1();
@@ -57,7 +62,6 @@ function Sidebar() {
   };
 
   const changeThread = async (newThreadId) => {
-
     const selectedThread = allThreads.find(
       thread => thread.threadId === newThreadId
     );
@@ -67,9 +71,13 @@ function Sidebar() {
     setCurrThreadId(selectedThread.threadId);
 
     try {
-
       const response = await fetch(
-        `http://localhost:8080/chat/thread/${selectedThread.threadId}`
+        `http://localhost:8080/chat/thread/${selectedThread.threadId}`,
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        }
       );
 
       const res = await response.json();
@@ -86,9 +94,12 @@ function Sidebar() {
   const deleteThread = async (threadId) => {
     try {
       const response = await fetch(`http://localhost:8080/chat/thread/${threadId}`, {
-        method: "DELETE"});
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
       const res = await response.json();
-      console.log("Delete response:", res);
       setAllThreads(prev => prev.filter(thread => thread.threadId !== threadId));
       if (currThreadId === threadId) {
         createNewChat();
@@ -98,10 +109,8 @@ function Sidebar() {
     }
   };
 
-   
   return (
     <section className="sidebar">
-
       {/* New Chat Button */}
       <button onClick={createNewChat}>
         <img src="src/assets/blacklogo.png" alt="gpt logo" className="logo" />

@@ -1,6 +1,7 @@
 import express from "express";
 import Thread from "../models/Thread.js";
 import Groq from "groq-sdk";
+import { verifyToken } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -11,9 +12,9 @@ const groq = new Groq({
 /* =====================================================
    1️⃣ GET /thread  → get all threads (latest first)
    ===================================================== */
-router.get("/thread", async (req, res) => {
+router.get("/thread", verifyToken, async (req, res) => {
   try {
-    let threads = await Thread.find({})
+    let threads = await Thread.find({ userId: req.user.id })
       .sort({ updatedAt: -1 })
       .select("-messages"); // messages hide (list view)
 
@@ -25,13 +26,26 @@ router.get("/thread", async (req, res) => {
 });
 
 /* =====================================================
+   🔥 DELETE /thread  → delete ALL threads for user
+   ===================================================== */
+router.delete("/thread", verifyToken, async (req, res) => {
+  try {
+    await Thread.deleteMany({ userId: req.user.id });
+    res.json({ success: "All threads deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to delete all threads" });
+  }
+});
+
+/* =====================================================
    2️⃣ GET /thread/:threadId → get messages of a thread
    ===================================================== */
-router.get("/thread/:threadId", async (req, res) => {
+router.get("/thread/:threadId", verifyToken, async (req, res) => {
   const { threadId } = req.params;
 
   try {
-    const thread = await Thread.findOne({ threadId });
+    const thread = await Thread.findOne({ threadId, userId: req.user.id });
 
     if (!thread) {
       return res.status(404).json({ error: "Thread not found" });
@@ -47,11 +61,11 @@ router.get("/thread/:threadId", async (req, res) => {
 /* =====================================================
    3️⃣ DELETE /thread/:threadId → delete a thread
    ===================================================== */
-router.delete("/thread/:threadId", async (req, res) => {
+router.delete("/thread/:threadId", verifyToken, async (req, res) => {
   const { threadId } = req.params;
 
   try {
-    const deleted = await Thread.findOneAndDelete({ threadId });
+    const deleted = await Thread.findOneAndDelete({ threadId, userId: req.user.id });
 
     if (!deleted) {
       return res.status(404).json({ error: "Thread not found" });
@@ -67,7 +81,7 @@ router.delete("/thread/:threadId", async (req, res) => {
 /* =====================================================
    4️⃣ POST /chat → main chat logic
    ===================================================== */
-router.post("/chat", async (req, res) => {
+router.post("/chat", verifyToken, async (req, res) => {
   try {
     const { threadId, message } = req.body;
 
@@ -77,12 +91,13 @@ router.post("/chat", async (req, res) => {
     }
 
     // 2️⃣ find thread
-    let thread = await Thread.findOne({ threadId });
+    let thread = await Thread.findOne({ threadId, userId: req.user.id });
 
     // if not exist → create
     if (!thread) {
       thread = new Thread({
         threadId,
+        userId: req.user.id,
         title: message.slice(0, 30),
         messages: [],
       });

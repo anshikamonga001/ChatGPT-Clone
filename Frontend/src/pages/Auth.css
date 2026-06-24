@@ -1,0 +1,193 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  background: radial-gradient(circle at 15% 50%, rgba(20, 20, 20, 1), rgba(0, 0, 0, 1)), 
+              radial-gradient(circle at 85% 30%, rgba(40, 40, 40, 0.4), transparent 50%);
+  background-color: #050505;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Subtle animated background shapes */
+.auth-container::before, .auth-container::after {
+  content: '';
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  filter: blur(100px);
+  z-index: 0;
+  animation: float 10s infinite alternate ease-in-out;
+}
+
+.auth-container::before {
+  background: rgba(255, 255, 255, 0.05);
+  top: -10%;
+  left: 10%;
+}
+
+.auth-container::after {
+  background: rgba(255, 255, 255, 0.03);
+  bottom: -10%;
+  right: 10%;
+  animation-delay: -5s;
+}
+
+@keyframes float {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(30px) scale(1.1); }
+}
+
+.auth-card {
+  position: relative;
+  z-index: 1;
+  background: rgba(30, 30, 30, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 45px 40px;
+  border-radius: 20px;
+  width: 420px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin: auto;
+}
+
+.auth-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+}
+
+.auth-logo {
+  width: 45px;
+  margin: 0 auto 15px auto;
+  display: block;
+  filter: invert(1);
+}
+
+.auth-card h2 {
+  margin-bottom: 8px;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  background: linear-gradient(to right, #fff, #aaa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.auth-subtitle {
+  color: #888;
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-form input {
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  color: white;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.auth-form input::placeholder {
+  color: #666;
+}
+
+.auth-form input:focus {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.05);
+}
+
+.auth-button {
+  background: linear-gradient(135deg, #10a37f 0%, #0c7f62 100%);
+  color: #fff;
+  border: none;
+  padding: 15px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(16, 163, 127, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.auth-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: all 0.5s ease;
+}
+
+.auth-button:hover::after {
+  left: 100%;
+}
+
+.auth-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 163, 127, 0.5);
+  background: linear-gradient(135deg, #12b88f 0%, #0d8b6c 100%);
+}
+
+.auth-button:active {
+  transform: translateY(0);
+}
+
+.auth-link {
+  margin-top: 25px;
+  font-size: 14px;
+  color: #888;
+}
+
+.auth-link a {
+  color: #fff;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  margin-left: 5px;
+}
+
+.auth-link a:hover {
+  color: #ccc;
+  text-decoration: underline;
+}
+
+.auth-error {
+  background: rgba(255, 74, 74, 0.1);
+  color: #ff4a4a;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 74, 74, 0.2);
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}

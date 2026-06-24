@@ -1,0 +1,338 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  animation: fadeIn 0.2s forwards ease-out;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background: #212121;
+  width: 700px;
+  max-width: 90vw;
+  height: 550px;
+  max-height: 90vh;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid #333;
+  color: #ececec;
+  transform: translateY(20px);
+  animation: slideUp 0.3s forwards cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  to { transform: translateY(0); }
+}
+
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 10;
+  transition: color 0.2s;
+}
+
+.modal-close:hover {
+  color: #fff;
+}
+
+/* Settings Layout */
+.settings-sidebar {
+  width: 220px;
+  background: #171717;
+  padding: 20px 0;
+  border-right: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-tab {
+  padding: 12px 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #aaa;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.settings-tab:hover {
+  background: #2a2a2a;
+  color: #fff;
+}
+
+.settings-tab.active {
+  background: #2f2f2f;
+  color: #fff;
+  border-left: 3px solid #10a37f;
+}
+
+.settings-body {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+}
+
+.settings-body h3 {
+  margin-top: 0;
+  margin-bottom: 25px;
+  font-size: 20px;
+  font-weight: 600;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #333;
+}
+
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #333;
+}
+
+.setting-row:last-child {
+  border-bottom: none;
+}
+
+.setting-info h4 {
+  margin: 0 0 5px 0;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.setting-info p {
+  margin: 0;
+  font-size: 13px;
+  color: #888;
+}
+
+.setting-control select {
+  background: #1a1a1a;
+  color: #fff;
+  border: 1px solid #444;
+  padding: 8px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+.setting-danger-btn {
+  background: #ff4a4a;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.setting-danger-btn:hover {
+  background: #e63939;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+/* Reset all global input styles for the hidden checkbox */
+.toggle-switch input[type="checkbox"] {
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  pointer-events: none;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #555;
+  transition: background-color 0.3s;
+  border-radius: 26px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #fff;
+  transition: transform 0.3s;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+
+.toggle-switch input[type="checkbox"]:checked + .toggle-slider {
+  background-color: #10a37f;
+}
+
+.toggle-switch input[type="checkbox"]:checked + .toggle-slider:before {
+  transform: translateX(20px);
+}
+
+/* Upgrade Modal Specifics */
+.upgrade-modal {
+  width: 800px;
+  max-width: 95vw;
+  height: auto;
+  max-height: 90vh;
+  min-height: 400px;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.upgrade-header {
+  text-align: center;
+  padding: 30px;
+  border-bottom: 1px solid #333;
+}
+
+.upgrade-header h2 {
+  margin: 0 0 10px 0;
+  font-size: 24px;
+}
+
+.upgrade-header p {
+  margin: 0;
+  color: #888;
+}
+
+.upgrade-cards {
+  display: flex;
+  padding: 30px;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap; /* allows wrapping on very small screens */
+}
+
+.upgrade-card {
+  flex: 1;
+  min-width: 250px;
+  background: #171717;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  box-shadow: inset 0 0 0 1px #333;
+}
+
+.upgrade-card:hover {
+  transform: translateY(-3px);
+  box-shadow: inset 0 0 0 1px #555, 0 10px 20px rgba(0,0,0,0.3);
+}
+
+.upgrade-card.selected {
+  border-color: #10a37f;
+  box-shadow: 0 0 0 1px #10a37f, 0 10px 30px rgba(16, 163, 127, 0.2);
+  background: linear-gradient(180deg, rgba(16,163,127,0.08) 0%, rgba(23,23,23,1) 50%);
+}
+
+.upgrade-card.premium.selected {
+  background: linear-gradient(180deg, rgba(16,163,127,0.15) 0%, rgba(23,23,23,1) 60%);
+}
+
+.upgrade-price {
+  font-size: 28px;
+  font-weight: bold;
+  margin: 15px 0;
+}
+
+.upgrade-price span {
+  font-size: 14px;
+  font-weight: normal;
+  color: #888;
+}
+
+.upgrade-features {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+  flex: 1;
+}
+
+.upgrade-features li {
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #ccc;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.upgrade-features li i {
+  color: #10a37f;
+}
+
+.upgrade-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0.7;
+}
+
+.upgrade-card.selected .upgrade-btn {
+  opacity: 1;
+}
+
+.upgrade-btn.free {
+  background: #333;
+  color: #fff;
+}
+
+.upgrade-card.selected .upgrade-btn.free {
+  background: #555;
+}
+
+.upgrade-btn.premium {
+  background: #10a37f;
+  color: #fff;
+}
+
+.upgrade-card.selected .upgrade-btn.premium {
+  background: #0d8b6c;
+}

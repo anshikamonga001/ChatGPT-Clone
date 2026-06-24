@@ -2,14 +2,18 @@ import "./ChatWindow.css";
 import Chat from "./Chat.jsx";
 import { MyContext } from "./MyContext.jsx";
 import { useContext, useState } from "react";
+import SettingsModal from "./SettingsModal.jsx";
+import UpgradeModal from "./UpgradeModal.jsx";
 
 function ChatWindow(){
 
-    const { prompt, setPrompt, currThreadId, setPreviousChats, setNewChat } = useContext(MyContext);    
+    const { prompt, setPrompt, currThreadId, setPreviousChats, setNewChat, token, handleLogout, user, setRefreshThreads } = useContext(MyContext);    
     const [isLoading, setIsLoading] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
     const [isTyping, setIsTyping] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);//false
+    const [isOpen, setIsOpen] = useState(false);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
 
     const getReply = async () => {
 
@@ -19,15 +23,26 @@ function ChatWindow(){
 
     setIsPaused(false);
     setIsTyping(false);
-    setIsLoading(true);
 
     const userMessage = prompt;
+    setPrompt(""); // Clear input immediately
+
+    // Show user's message immediately
+    setPreviousChats(prevChats => [
+        ...prevChats,
+        { role: "user", content: userMessage }
+    ]);
+
+    setIsLoading(true);
 
     try {
 
         const response = await fetch("http://localhost:8080/chat/chat", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}` 
+            },
             body: JSON.stringify({
                 message: userMessage,
                 threadId: currThreadId
@@ -36,13 +51,15 @@ function ChatWindow(){
 
         const rep = await response.json();
 
+        setIsTyping(true);
+
+        // Tell the sidebar to fetch updated threads so the new chat shows immediately
+        setRefreshThreads(prev => !prev);
+
         setPreviousChats(prevChats => [
             ...prevChats,
-            { role: "user", content: userMessage },
             { role: "assistant", content: rep.reply }
         ]);
-
-        setPrompt("");
 
     } catch (error) {
         console.error("Error fetching reply:", error);
@@ -71,20 +88,32 @@ function ChatWindow(){
 
                 <div className="userIconDiv" onClick={handleProfileClick}>
                     <span className="userIcon">
-                        <i className="fa-solid fa-user"></i>
+                        {user?.name ? (
+                            <span style={{ fontSize: '14px', fontWeight: 'bold' }}>{user.name.charAt(0).toUpperCase()}</span>
+                        ) : (
+                            <i className="fa-solid fa-user"></i>
+                        )}
                     </span>
                 </div>
             </div>
             {
                 isOpen && (
                     <div className="dropDown">
-                        <div className="dropDownItem"><i class="fa-solid fa-cloud-arrow-up"></i> Upgrade Plan</div>
-                        <div className="dropDownItem"><i class="fa-solid fa-gear"></i> Settings</div>
-                        <div className="dropDownItem"><i class="fa-solid fa-sign-out"></i> Logout</div>
+                        <div className="dropDownItem" onClick={() => { setIsUpgradeOpen(true); setIsOpen(false); }}>
+                            <i className="fa-solid fa-cloud-arrow-up"></i> Upgrade Plan
+                        </div>
+                        <div className="dropDownItem" onClick={() => { setIsSettingsOpen(true); setIsOpen(false); }}>
+                            <i className="fa-solid fa-gear"></i> Settings
+                        </div>
+                        <div className="dropDownItem" onClick={handleLogout}>
+                            <i className="fa-solid fa-sign-out"></i> Logout
+                        </div>
                     </div>
                 )
-
             }
+
+            <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+            <UpgradeModal isOpen={isUpgradeOpen} onClose={() => setIsUpgradeOpen(false)} />
 
             <Chat
                 isLoading={isLoading}
