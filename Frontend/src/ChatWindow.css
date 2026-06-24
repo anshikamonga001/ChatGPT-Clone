@@ -41,21 +41,25 @@
 
 .inputBox{
     width: 100%;
-    position: relative;
     max-width: 700px;
     margin: auto;
     display: flex;
     align-items: center;
+    gap: 6px;
+    background-color: rgba(255,255,255,0.05);
+    border-radius: 50px;
+    padding: 6px 10px 6px 6px;
 }
 
 input{
-    width: 100%;
+    flex: 1;
     border: none;
-    background-color: rgba(255,255,255,0.05);
-    padding: 20px 50px 20px 54px;
+    background: transparent;
+    padding: 12px 8px;
     font-size: 0.8rem;
-    border-radius: 50px;
+    border-radius: 0;
     color: #fff;
+    min-width: 0;
 }
 
 input:focus{
@@ -64,14 +68,20 @@ input:focus{
 
 #submit{
     cursor: pointer;
-    height: 35px;
-    width: 35px;
-    font-size: 20px;
+    height: 34px;
+    width: 34px;
+    font-size: 18px;
     display: flex;
     justify-content: center;
     align-items: center;
-    position: absolute;
-    right: 15px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    transition: background 0.2s;
+    color: #fff;
+}
+
+#submit:hover{
+    background: rgba(255,255,255,0.08);
 }
 
 .info{
@@ -80,6 +90,135 @@ input:focus{
     color: gray;
     text-align: center;
 }
+
+/* ── Model Selector ────────────────────────────── */
+.modelSelector {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    position: relative;
+}
+
+.modelSelector:hover {
+    background: rgba(255,255,255,0.07);
+}
+
+.modelName {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.modelChevron {
+    font-size: 11px;
+    color: #aaa;
+    transition: transform 0.2s;
+}
+
+.modelDropdown {
+    position: absolute;
+    top: 60px;
+    left: 16px;
+    background: #2a2a2a;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+    padding: 8px;
+    min-width: 300px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+    z-index: 2000;
+    animation: fadeInDown 0.15s ease;
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.modelOption {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s;
+    gap: 10px;
+}
+
+.modelOption:hover {
+    background: rgba(255,255,255,0.06);
+}
+
+.modelOption.active {
+    background: rgba(255,255,255,0.05);
+}
+
+.modelOptionLeft {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.modelIconWrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    color: #ccc;
+    flex-shrink: 0;
+}
+
+.modelIconWrap.plus {
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    color: #fff;
+}
+
+.modelOptionName {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.modelOptionDesc {
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 2px;
+}
+
+.upgradeChip {
+    background: #fff;
+    color: #000;
+    border: none;
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin: 0;
+    width: auto;
+    display: inline-flex;
+    transition: background 0.2s;
+}
+
+.upgradeChip:hover {
+    background: #eee;
+}
+
+.modelCheck {
+    color: #10a37f;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
 
 
 .dropDown{
@@ -105,33 +244,6 @@ input:focus{
 .dropDownItem:hover{
     background-color: #444444;
     border-radius: 6px;
-}
-
-/* Mic Button */
-#micBtn {
-    position: absolute;
-    left: 15px;
-    height: 32px;
-    width: 32px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    border-radius: 50%;
-    color: #aaa;
-    font-size: 14px;
-    transition: color 0.2s, background-color 0.2s;
-    z-index: 2;
-}
-
-#micBtn:hover {
-    color: #fff;
-    background-color: rgba(255,255,255,0.08);
-}
-
-#micBtn.listening {
-    color: #ff4d4d;
-    animation: pulse 1.2s ease-in-out infinite;
 }
 
 @keyframes pulse {
@@ -197,13 +309,12 @@ input:focus{
     color: #ff4d4d;
 }
 
-/* ── Attach button & wrap ──────────────────────── */
+/* ── Attach button ──────────────────────────── */
 .attachWrap {
-    position: absolute;
-    left: 12px;
+    position: relative;
     display: flex;
     align-items: center;
-    z-index: 10;
+    flex-shrink: 0;
 }
 
 #attachBtn {
@@ -218,6 +329,7 @@ input:focus{
     font-size: 15px;
     transition: color 0.2s, background-color 0.2s;
     border: 1.5px solid rgba(255,255,255,0.2);
+    flex-shrink: 0;
 }
 
 #attachBtn:hover {
@@ -343,10 +455,8 @@ input:focus{
     color: #ff4d4d;
 }
 
-/* ── Mic button (keep offset next to attach) ───── */
+/* ── Mic button — flex item left of send arrow ── */
 #micBtn {
-    position: relative;
-    left: 6px;
     height: 32px;
     width: 32px;
     display: flex;

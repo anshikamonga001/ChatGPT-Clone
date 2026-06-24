@@ -12,9 +12,11 @@ function ChatWindow(){
     const [isPaused, setIsPaused] = useState(false);
     const [isTyping, setIsTyping] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+    const [isModelOpen, setIsModelOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
     const [isListening, setIsListening] = useState(false);
+    const [selectedModel, setSelectedModel] = useState('chatgpt');
 
     // Attachments
     const [attachments, setAttachments] = useState([]); // [{type, name, content, preview}]
@@ -284,8 +286,39 @@ function ChatWindow(){
         <div className="chatWindow">
 
             <div className="navbar">
-                <span>ChatGPT &nbsp; <i className="fa-solid fa-chevron-down"></i></span>
-                <div className="userIconDiv" onClick={handleProfileClick}>
+                <div className="modelSelector" onClick={() => { setIsModelOpen(p => !p); setIsOpen(false); }}>
+                    <span className="modelName">ChatGPT</span>
+                    <i className="fa-solid fa-chevron-down modelChevron"></i>
+                </div>
+
+                {isModelOpen && (
+                    <div className="modelDropdown" onClick={() => setIsModelOpen(false)}>
+                        <div className={`modelOption ${selectedModel === 'plus' ? 'active' : ''}`}
+                            onClick={() => { setSelectedModel('plus'); setIsUpgradeOpen(true); }}>
+                            <div className="modelOptionLeft">
+                                <div className="modelIconWrap plus"><i className="fa-solid fa-wand-magic-sparkles"></i></div>
+                                <div>
+                                    <div className="modelOptionName">ChatGPT Plus</div>
+                                    <div className="modelOptionDesc">Our smartest model &amp; more</div>
+                                </div>
+                            </div>
+                            <button className="upgradeChip" onClick={(e) => { e.stopPropagation(); setIsUpgradeOpen(true); setIsModelOpen(false); }}>Upgrade</button>
+                        </div>
+                        <div className={`modelOption ${selectedModel === 'chatgpt' ? 'active' : ''}`}
+                            onClick={() => setSelectedModel('chatgpt')}>
+                            <div className="modelOptionLeft">
+                                <div className="modelIconWrap"><i className="fa-solid fa-robot"></i></div>
+                                <div>
+                                    <div className="modelOptionName">ChatGPT</div>
+                                    <div className="modelOptionDesc">Great for everyday tasks</div>
+                                </div>
+                            </div>
+                            {selectedModel === 'chatgpt' && <i className="fa-solid fa-check modelCheck"></i>}
+                        </div>
+                    </div>
+                )}
+
+                <div className="userIconDiv" onClick={() => { setIsOpen(p => !p); setIsModelOpen(false); }}>
                     <span className="userIcon">
                         {user?.name ? (
                             <span style={{ fontSize: '14px', fontWeight: 'bold' }}>{user.name.charAt(0).toUpperCase()}</span>
@@ -401,7 +434,14 @@ function ChatWindow(){
                         )}
                     </div>
 
-                    {/* Mic button */}
+
+                    <input
+                        placeholder={isListening ? '🎤 Listening...' : 'Ask anything'}
+                        value={prompt}
+                        onChange={(e) => setPrompt(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' ? getReply() : ''}
+                    />
+                    {/* Mic button — left of send arrow, absolutely positioned */}
                     {dictationEnabled && (
                         <div
                             id="micBtn"
@@ -412,13 +452,6 @@ function ChatWindow(){
                             <i className={`fa-solid ${isListening ? 'fa-stop' : 'fa-microphone'}`}></i>
                         </div>
                     )}
-
-                    <input
-                        placeholder={isListening ? '🎤 Listening...' : 'Ask anything'}
-                        value={prompt}
-                        onChange={(e) => setPrompt(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' ? getReply() : ''}
-                    />
 
                     <div id="submit" onClick={(isLoading || isTyping) ? pauseResponse : getReply}>
                         {(isLoading || isTyping) ? (
