@@ -53,9 +53,65 @@
 }
 
 
-.hljs{
-    border-radius: 15px;
+/* Custom High-Contrast Code Block Styling for Dark Mode */
+body:not(.light-mode) .hljs {
+    background-color: #1e1e1e !important;
+    color: #abb2bf !important;
+    padding: 16px !important;
+    border-radius: 12px !important;
+    display: block !important;
+    overflow-x: auto !important;
+    font-family: 'Fira Code', 'Courier New', Courier, monospace !important;
+    font-size: 0.85rem !important;
+    line-height: 1.5 !important;
 }
+
+body:not(.light-mode) .hljs-keyword,
+body:not(.light-mode) .hljs-selector-tag,
+body:not(.light-mode) .hljs-built_in,
+body:not(.light-mode) .hljs-name {
+    color: #c678dd !important; /* Bright purple */
+}
+
+body:not(.light-mode) .hljs-string,
+body:not(.light-mode) .hljs-title,
+body:not(.light-mode) .hljs-section,
+body:not(.light-mode) .hljs-attribute,
+body:not(.light-mode) .hljs-literal,
+body:not(.light-mode) .hljs-template-tag,
+body:not(.light-mode) .hljs-template-variable,
+body:not(.light-mode) .hljs-type,
+body:not(.light-mode) .hljs-addition {
+    color: #98c379 !important; /* Bright green */
+}
+
+body:not(.light-mode) .hljs-number,
+body:not(.light-mode) .hljs-regexp,
+body:not(.light-mode) .hljs-symbol,
+body:not(.light-mode) .hljs-variable,
+body:not(.light-mode) .hljs-template-variable,
+body:not(.light-mode) .hljs-link,
+body:not(.light-mode) .hljs-selector-attr,
+body:not(.light-mode) .hljs-selector-pseudo {
+    color: #d19a66 !important; /* Bright orange */
+}
+
+body:not(.light-mode) .hljs-comment,
+body:not(.light-mode) .hljs-quote {
+    color: #7f848e !important; /* Readable grey for comments */
+    font-style: italic !important;
+}
+
+body:not(.light-mode) .hljs-params,
+body:not(.light-mode) .hljs-attr {
+    color: #61afef !important; /* Bright blue */
+}
+
+body:not(.light-mode) .hljs-doctag,
+body:not(.light-mode) .hljs-meta {
+    color: #56b6c2 !important; /* Bright cyan */
+}
+
 
 pre{
     white-space: pre-wrap;
