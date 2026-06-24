@@ -3,6 +3,7 @@ import { MyContext } from "./MyContext.jsx";
 import { useContext, useEffect } from "react";
 import { v1 as uuidv1 } from "uuid";
 import { API_URL } from "./config.js";
+import blackLogo from "./assets/blacklogo.png";
 
 function Sidebar() {
   const {
@@ -17,7 +18,9 @@ function Sidebar() {
     token,
     user,
     handleLogout,
-    refreshThreads
+    refreshThreads,
+    isSidebarOpen,
+    setIsSidebarOpen
   } = useContext(MyContext);
 
   const getAllThreads = async () => {
@@ -58,6 +61,7 @@ function Sidebar() {
     setReply(null);
     setCurrThreadId(newId);
     setPreviousChats([]);
+    setIsSidebarOpen(false);
 
     getAllThreads();
   };
@@ -70,6 +74,7 @@ function Sidebar() {
     if (!selectedThread) return;
 
     setCurrThreadId(selectedThread.threadId);
+    setIsSidebarOpen(false);
 
     try {
       const response = await fetch(
@@ -111,14 +116,19 @@ function Sidebar() {
   };
 
   return (
-    <section className="sidebar">
-      {/* New Chat Button */}
-      <button onClick={createNewChat}>
-        <img src="src/assets/blacklogo.png" alt="gpt logo" className="logo" />
-        <span>
-          <i className="fa-regular fa-pen-to-square"></i>
-        </span>
-      </button>
+    <section className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
+      {/* Sidebar Header */}
+      <div className="sidebarHeader">
+        <button onClick={createNewChat} style={{ flex: 1 }}>
+          <img src={blackLogo} alt="gpt logo" className="logo" />
+          <span>
+            <i className="fa-regular fa-pen-to-square"></i>
+          </span>
+        </button>
+        <div className="closeSidebarBtn" onClick={() => setIsSidebarOpen(false)}>
+          <i className="fa-solid fa-xmark"></i>
+        </div>
+      </div>
 
       {/* Chat History */}
       <ul className="history">

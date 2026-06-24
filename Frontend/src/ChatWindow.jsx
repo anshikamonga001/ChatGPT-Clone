@@ -8,7 +8,7 @@ import { API_URL } from "./config.js";
 
 function ChatWindow(){
 
-    const { prompt, setPrompt, currThreadId, setPreviousChats, setNewChat, token, handleLogout, user, setRefreshThreads } = useContext(MyContext);
+    const { prompt, setPrompt, currThreadId, setPreviousChats, setNewChat, token, handleLogout, user, setRefreshThreads, setIsSidebarOpen } = useContext(MyContext);
     const [isLoading, setIsLoading] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
     const [isTyping, setIsTyping] = useState(false);
@@ -287,6 +287,9 @@ function ChatWindow(){
         <div className="chatWindow">
 
             <div className="navbar">
+                <div className="hamburger" onClick={() => setIsSidebarOpen(true)}>
+                    <i className="fa-solid fa-bars"></i>
+                </div>
                 <div className="modelSelector" onClick={() => { setIsModelOpen(p => !p); setIsOpen(false); }}>
                     <span className="modelName">ChatGPT</span>
                     <i className="fa-solid fa-chevron-down modelChevron"></i>

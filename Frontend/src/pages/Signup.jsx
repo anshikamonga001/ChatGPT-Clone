@@ -2,6 +2,7 @@ import { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { MyContext } from '../MyContext.jsx';
 import { API_URL } from '../config.js';
+import blackLogo from '../assets/blacklogo.png';
 import './Auth.css';
 
 function Signup() {
@@ -43,7 +44,7 @@ function Signup() {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <img src="../src/assets/blacklogo.png" alt="Logo" className="auth-logo" />
+        <img src={blackLogo} alt="Logo" className="auth-logo" />
         <h2>Create an account</h2>
         <p className="auth-subtitle">Join the next generation of AI chat</p>
         

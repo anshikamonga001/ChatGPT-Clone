@@ -19,6 +19,7 @@ function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [refreshThreads, setRefreshThreads] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -73,7 +74,9 @@ function App() {
     theme,
     setTheme,
     refreshThreads,
-    setRefreshThreads
+    setRefreshThreads,
+    isSidebarOpen,
+    setIsSidebarOpen
   };
 
   return (
@@ -86,6 +89,7 @@ function App() {
           element={
             user ? (
               <div className='app'>
+                {isSidebarOpen && <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)}></div>}
                 <Sidebar />
                 <ChatWindow />
               </div>

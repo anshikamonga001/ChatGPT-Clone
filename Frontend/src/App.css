@@ -40,3 +40,21 @@ body{
     scrollbar-width: thin;
     scrollbar-color: rgba(255,255,255,0.15) transparent;
 }
+
+/* Sidebar overlay backdrop for mobile */
+.sidebar-overlay {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .sidebar-overlay {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+}
