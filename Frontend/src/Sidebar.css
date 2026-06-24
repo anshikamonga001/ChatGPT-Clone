@@ -31,9 +31,12 @@ button span{
     font-size: 20px;
 }
 
-button:hover{
-    background-color: rgba(180,180,180,0.05);
+@media (hover: hover) {
+    button:hover{
+        background-color: rgba(180,180,180,0.05);
+    }
 }
+
 
 .history{
     flex: 1;
@@ -56,10 +59,13 @@ button:hover{
 }
 
 
-.history li:hover{
-    background-color: rgba(180,180,180,0.05);
-    border-radius: 8px;
+@media (hover: hover) {
+    .history li:hover{
+        background-color: rgba(180,180,180,0.05);
+        border-radius: 8px;
+    }
 }
+
 
 .sign{
     padding: 10px;
@@ -71,22 +77,28 @@ button:hover{
 
 
 .fa-trash{
-    opacity: 0;
+    opacity: 0.6; /* Visible on mobile */
     position: absolute;
     right: 10px;
     cursor: pointer;
+    transition: opacity 0.2s, color 0.2s;
 }
 
-
-.history li:hover .fa-trash{
-    opacity: 1;
-    color: #fff;
+@media (hover: hover) {
+    .fa-trash {
+        opacity: 0; /* Hidden on desktop until hover */
+    }
+    
+    .history li:hover .fa-trash{
+        opacity: 1;
+        color: #fff;
+    }
+    
+    .fa-trash:hover{
+        color: #ff4d4d !important;
+    }
 }
 
-
-.fa-trash:hover{
-    color: #ff4d4d !important;
-}
 
 
 .highlighted{

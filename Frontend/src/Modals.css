@@ -77,10 +77,13 @@
   transition: all 0.2s;
 }
 
-.settings-tab:hover {
-  background: #2a2a2a;
-  color: #fff;
+@media (hover: hover) {
+  .settings-tab:hover {
+    background: #2a2a2a;
+    color: #fff;
+  }
 }
+
 
 .settings-tab.active {
   background: #2f2f2f;
@@ -148,9 +151,12 @@
   transition: background 0.2s;
 }
 
-.setting-danger-btn:hover {
-  background: #e63939;
+@media (hover: hover) {
+  .setting-danger-btn:hover {
+    background: #e63939;
+  }
 }
+
 
 /* Toggle Switch */
 .toggle-switch {

@@ -1,4 +1,5 @@
-*{
+*, *::before, *::after{
+    box-sizing: border-box;
     color: #ececec;
     font-family: Roboto, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
