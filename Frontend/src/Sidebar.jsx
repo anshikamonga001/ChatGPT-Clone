@@ -2,6 +2,7 @@ import "./Sidebar.css";
 import { MyContext } from "./MyContext.jsx";
 import { useContext, useEffect } from "react";
 import { v1 as uuidv1 } from "uuid";
+import { API_URL } from "./config.js";
 
 function Sidebar() {
   const {
@@ -22,7 +23,7 @@ function Sidebar() {
   const getAllThreads = async () => {
     if (!token) return;
     try {
-      const response = await fetch("http://localhost:8080/chat/thread", {
+      const response = await fetch(`${API_URL}/chat/thread`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -72,7 +73,7 @@ function Sidebar() {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/chat/thread/${selectedThread.threadId}`,
+        `${API_URL}/chat/thread/${selectedThread.threadId}`,
         {
           headers: {
             "Authorization": `Bearer ${token}`
@@ -93,7 +94,7 @@ function Sidebar() {
 
   const deleteThread = async (threadId) => {
     try {
-      const response = await fetch(`http://localhost:8080/chat/thread/${threadId}`, {
+      const response = await fetch(`${API_URL}/chat/thread/${threadId}`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${token}`

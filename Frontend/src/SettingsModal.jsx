@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { MyContext } from './MyContext.jsx';
+import { API_URL } from './config.js';
 import './Modals.css';
 
 function SettingsModal({ isOpen, onClose }) {
@@ -37,7 +38,7 @@ function SettingsModal({ isOpen, onClose }) {
   const handleDeleteAll = async () => {
     if (window.confirm("Are you sure you want to delete ALL your chats? This cannot be undone.")) {
       try {
-        const response = await fetch("http://localhost:8080/chat/thread", {
+        const response = await fetch(`${API_URL}/chat/thread`, {
           method: "DELETE",
           headers: {
             "Authorization": `Bearer ${token}`

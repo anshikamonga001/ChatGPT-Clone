@@ -4,6 +4,7 @@ import { MyContext } from "./MyContext.jsx";
 import { useContext, useState, useRef, useEffect } from "react";
 import SettingsModal from "./SettingsModal.jsx";
 import UpgradeModal from "./UpgradeModal.jsx";
+import { API_URL } from "./config.js";
 
 function ChatWindow(){
 
@@ -89,7 +90,7 @@ function ChatWindow(){
         setIsLoading(true);
 
         try {
-            const response = await fetch('http://localhost:8080/chat/chat', {
+            const response = await fetch(`${API_URL}/chat/chat`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
